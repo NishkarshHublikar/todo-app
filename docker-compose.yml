@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+
+  # ─── Redis ───────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: todo_redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Backend ─────────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: todo_backend
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    environment:
+      PORT: 3001
+      # Supabase and other variables are loaded from env_file above
+      # Overrides can still be placed here:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      GITHUB_CALLBACK_URL: http://localhost:3001/auth/github/callback
+      FRONTEND_URL: http://localhost:8080
+    ports:
+      - "3001:3001"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3001/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # ─── Frontend ────────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: todo_frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      API_URL: /api
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-rzp_test_REPLACE_ME}
+    ports:
+      - "8080:8080"
+
+volumes:
+  redis_data:

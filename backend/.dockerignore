@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log*
+.env
+.env.*
+!.env.example
+*.test.js
+.git
+.gitignore
+README.md
+scratch
+tmp
+temp
+coverage
+*.log
+.DS_Store

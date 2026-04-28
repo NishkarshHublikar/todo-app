@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: todo-app
+  labels:
+    app: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001
+      nodePort: 32001
+  type: NodePort
+  # Self-hosted/clusters without a cloud load balancer should use NodePort.
+  # Access backend locally via http://127.0.0.1:32001

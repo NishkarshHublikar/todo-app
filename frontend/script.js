@@ -1,4 +1,8 @@
-const API = typeof window.ENV_API_URL === "string" ? window.ENV_API_URL.trim() : "";
+const API =
+  window.__ENV__ &&
+  typeof window.__ENV__.API_URL === "string"
+    ? window.__ENV__.API_URL.trim()
+    : "http://localhost:3001";
 const RAZORPAY_KEY = window.ENV_RAZORPAY_KEY || "rzp_test_REPLACE_ME";
 
 function getToken() { return localStorage.getItem("token"); }

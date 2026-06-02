@@ -1,4 +1,7 @@
 const nodemailer = require("nodemailer");
+const dns = require("dns");
+
+dns.setDefaultResultOrder("ipv4first");
 
 /**
  * Send an email using Nodemailer
@@ -20,6 +23,9 @@ async function sendEmail({ to, subject, text, html }) {
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
       },
       connectionTimeout: 10000,
       greetingTimeout: 10000,

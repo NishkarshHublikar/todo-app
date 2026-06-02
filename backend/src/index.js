@@ -34,11 +34,19 @@ const allowedOrigins = new Set([
 ].filter(Boolean));
 
 function isAllowedOrigin(origin) {
+  console.log("Incoming Origin:", origin);
+
   if (!origin) return true;
+
   if (allowedOrigins.has(origin)) return true;
+
+  // Allow all Vercel deployments
+  if (origin.includes(".vercel.app")) return true;
+
   if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return true;
   if (/^https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin)) return true;
   if (/^https?:\/\/host\.docker\.internal(:\d+)?$/.test(origin)) return true;
+
   return false;
 }
 

@@ -14,9 +14,16 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
-app.set("trust proxy", 1); // Required for K8s Ingress (1 hop) and rate limiting
+app.set("trust proxy", 1);
+
 const allowedOrigins = new Set([
   process.env.FRONTEND_URL,
+
+  // Vercel deployments
+  "https://todo-dpcx8tp2e-nishkarshhublikars-projects.vercel.app",
+  "https://todo-app-ruby-one-63.vercel.app",
+
+  // Local
   "http://localhost:8080",
   "http://127.0.0.1:8080",
   "http://localhost:32080",

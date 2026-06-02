@@ -38,15 +38,21 @@ function isAllowedOrigin(origin) {
 
   if (!origin) return true;
 
-  if (allowedOrigins.has(origin)) return true;
+  if (allowedOrigins.has(origin)) {
+    console.log("✅ Allowed via whitelist:", origin);
+    return true;
+  }
 
-  // Allow all Vercel deployments
-  if (origin.includes(".vercel.app")) return true;
+  if (origin.includes(".vercel.app")) {
+    console.log("✅ Allowed via Vercel rule:", origin);
+    return true;
+  }
 
   if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return true;
   if (/^https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin)) return true;
   if (/^https?:\/\/host\.docker\.internal(:\d+)?$/.test(origin)) return true;
 
+  console.log("❌ BLOCKED ORIGIN:", origin);
   return false;
 }
 
